@@ -31,9 +31,9 @@ fm@fm:~$ docker ps
 # ver todos los contenedores
 fm@fm:~$ docker ps -a
 				CONTAINER ID   IMAGE         COMMAND    CREATED         STATUS                     		PORTS     NAMES
-				047b606f84dc   	hello-world   	"/hello"   			2 minutes ago   Exited (0) 2 minutes ago             		clever_noether
-				c8cd351b8526   hello-world   	"/hello"   			6 minutes ago   Exited (0) 6 minutes ago             		wizardly_margulis
-				5f33c6dcc33c   	hello-world   	"/hello"   			3 hours ago     	Exited (0) 3 hours ago               			strange_blackburn
+				047b606f84dc   	hello-world   	"/hello" 2 minutes ago   Exited (0) 2 minutes ago             		clever_noether
+				c8cd351b8526   hello-world   	"/hello" 6 minutes ago   Exited (0) 6 minutes ago             		wizardly_margulis
+				5f33c6dcc33c   	hello-world   	"/hello" 3 hours ago     Exited (0) 3 hours ago               		strange_blackburn
 
 # inspeccionar la confiuración de un contenedor
 fm@fm:~$ docker inspect 047b606f84dc
