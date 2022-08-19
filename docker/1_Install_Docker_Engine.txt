@@ -1,7 +1,7 @@
 <https://docs.docker.com/engine/install/ubuntu/>
 
 ######################################################################
-########## Comandos de la clase: Preparando tu entorno de trabajo ############
+###### Comandos de la clase: Preparando tu entorno de trabajo ########
 ######################################################################
 fm@fm:~$ docker --version
 				Docker version 20.10.17, build 100c701
