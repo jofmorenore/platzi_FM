@@ -59,3 +59,101 @@ Total reclaimed space: 0B
 
 # eliminar TODOS los contenedores
 fm@fm:~$ docker rm -f $(docker ps -aq)
+
+#################################################################################################################
+# correr un proceso para que no haga exit
+fm@fm:~$ docker run --name alwaysup -d ubuntu tail -f /dev/null
+				Unable to find image 'ubuntu:latest' locally
+				latest: Pulling from library/ubuntu
+				d19f32bd9e41: Pull complete 
+				Digest: sha256:34fea4f31bf187bc915536831fd0afc9d214755bf700b5cdb1336c82516d154e
+				Status: Downloaded newer image for ubuntu:latest
+				f1262c40798d0368891078ba7ee49bc78f2ab5c20975632fd17575147c7e30fa
+# en un contenedor que ya existe ejecutar un comando o un proceso
+fm@fm:~$ docker exec -it alwaysup bash
+				root@f1262c40798d:/# cat /etc/lsb-release
+				DISTRIB_ID=Ubuntu
+				DISTRIB_RELEASE=22.04
+				DISTRIB_CODENAME=jammy
+				DISTRIB_DESCRIPTION="Ubuntu 22.04.1 LTS"
+				root@f1262c40798d:/# ps
+					PID TTY          TIME CMD
+					  7 pts/0    00:00:00 bash
+					 16 pts/0    00:00:00 ps
+				root@f1262c40798d:/# ps -a
+					PID TTY          TIME CMD
+					 17 pts/0    00:00:00 ps
+				root@f1262c40798d:/# exit
+				exit
+# saber el process_id filtrando 
+fm@fm:~$ docker inspect --format '{{.State.Pid}}' alwaysup
+				502683
+fm@fm:~$ docker ps -a
+				CONTAINER ID   IMAGE     COMMAND               CREATED          STATUS          PORTS     NAMES
+				f1262c40798d   ubuntu    "tail -f /dev/null"   11 minutes ago   Up 11 minutes             alwaysup
+# termina el proceso principal
+fm@fm:~$ docker kill alwaysup
+				alwaysup
+fm@fm:~$ docker ps -a
+				CONTAINER ID   IMAGE     COMMAND               CREATED          STATUS                        PORTS     NAMES
+				f1262c40798d   ubuntu    "tail -f /dev/null"   14 minutes ago   Exited (137) 13 seconds ago             alwaysup
+
+#################################################################################################################				
+# usar servidor nginx (web server y rever proxys)
+fm@fm:~$ docker run -d --name proxy nginx
+				Unable to find image 'nginx:latest' locally
+				latest: Pulling from library/nginx
+				1efc276f4ff9: Pull complete 
+				baf2da91597d: Pull complete 
+				05396a986fd3: Pull complete 
+				6a17c8e7063d: Pull complete 
+				27e0d286aeab: Pull complete 
+				b1349eea8fc5: Pull complete 
+				Digest: sha256:790711e34858c9b0741edffef6ed3d8199d8faa33f2870dea5db70f16384df79
+				Status: Downloaded newer image for nginx:latest
+				821384d1e1ddda6d5028ac52b10fccdff80c235982705169e352f9885d014503
+fm@fm:~$ docker ps
+				CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS     NAMES
+				821384d1e1dd   nginx     "/docker-entrypoint.…"   7 seconds ago   Up 6 seconds   80/tcp    proxy
+# apaga el contenedor
+fm@fm:~$ docker stop proxy
+				proxy
+fm@fm:~$ docker ps -a
+				CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                        PORTS     NAMES
+				821384d1e1dd   nginx     "/docker-entrypoint.…"   29 seconds ago      Exited (0) 12 seconds ago               proxy
+				f1262c40798d   ubuntu    "tail -f /dev/null"      About an hour ago   Exited (137) 52 minutes ago             alwaysup
+# borrar el contenedor
+fm@fm:~$ docker rm proxy
+				proxy
+fm@fm:~$ docker ps -a
+				CONTAINER ID   IMAGE     COMMAND               CREATED             STATUS                        PORTS     NAMES
+				f1262c40798d   ubuntu    "tail -f /dev/null"   About an hour ago   Exited (137) 52 minutes ago             alwaysup
+# corre el nginx en la terminal 
+fm@fm:~$ docker run --name proxy -p 8080:80 nginx
+				...
+fm@fm:~$ docker ps -a
+				CONTAINER ID   IMAGE     COMMAND                  CREATED              STATUS                        PORTS     NAMES
+				ec52b1dab8a2   nginx     "/docker-entrypoint.…"   About a minute ago   Exited (0) 7 seconds ago                proxy
+				f1262c40798d   ubuntu    "tail -f /dev/null"      About an hour ago    Exited (137) 54 minutes ago             alwaysup
+fm@fm:~$ docker rm proxy
+				proxy
+# corre un nginx y expone el puerto 80 del contenedor en el puerto 8080 del PC
+fm@fm:~$ docker run --name proxy -d -p 8080:80 nginx
+				2582473a5f000e9fb525150737e547205d8d5d59222c216470f84cfaa3dfc2de
+fm@fm:~$ docker ps -a
+				CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                        PORTS                                   NAMES
+				2582473a5f00   nginx     "/docker-entrypoint.…"   2 minutes ago       Up 2 minutes                  0.0.0.0:8080->80/tcp, :::8080->80/tcp   proxy
+				f1262c40798d   ubuntu    "tail -f /dev/null"      About an hour ago   Exited (137) 57 minutes ago                                           alwaysup
+# ver los logs
+fm@fm:~$ docker logs proxy
+				...
+# hacer un follow del log
+fm@fm:~$ docker logs -f proxy
+				...
+				^C
+fm@fm:~$ docker ps
+				CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                   NAMES
+				2582473a5f00   nginx     "/docker-entrypoint.…"   4 minutes ago   Up 4 minutes   0.0.0.0:8080->80/tcp, :::8080->80/tcp   proxy
+# ver y seguir las 10 últimas entradas del log
+fm@fm:~$ docker logs --tail 10 -f proxy
+				...				
