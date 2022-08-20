@@ -137,7 +137,7 @@ fm@fm:~$ docker ps -a
 				f1262c40798d   ubuntu    "tail -f /dev/null"      About an hour ago    Exited (137) 54 minutes ago             alwaysup
 fm@fm:~$ docker rm proxy
 				proxy
-# corre un nginx y expone el puerto 80 del contenedor en el puerto 8080 del PC
+# corre en background ('-d') un nginx y expone el puerto 80 del contenedor en el puerto 8080 del PC
 fm@fm:~$ docker run --name proxy -d -p 8080:80 nginx
 				2582473a5f000e9fb525150737e547205d8d5d59222c216470f84cfaa3dfc2de
 fm@fm:~$ docker ps -a
