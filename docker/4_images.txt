@@ -109,6 +109,7 @@ fm@fm:~/Documents/docker/imagenes$ docker push jofmorenore/ubuntu:platzi
 				629d9dbab5ed: Mounted from library/ubuntu 
 				platzi: digest: sha256:1d8f2917d20795b796bbb04c59dacceebc1c0fc537d737dd98dc141db0f562b3 size: 736
 
+###############################################################################################################
 # ver las capas de una imagen: cómo está hecha la imagen
 fm@fm:~/Documents/docker/imagenes$ docker history ubuntu:platzi
 				IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
