@@ -32,3 +32,79 @@ fm@fm:~/Documents/docker/dockerdata$ docker image ls
 				ubuntu        latest    df5de72bdb3b   2 weeks ago     77.8MB
 				ubuntu        20.04     3bc6e9f30f51   2 weeks ago     72.8MB
 				hello-world   latest    feb5d9fea6a5   11 months ago   13.3kB
+
+###############################################################################################################
+fm@fm:~$ sudo snap install code --classic
+				code e4503b30 from Visual Studio Code (vscode✓) installed
+fm@fm:~$ code .
+fm@fm:~$ cd Documents
+fm@fm:~/Documents$ cd docker
+fm@fm:~/Documents/docker$ mkdir imagenes
+fm@fm:~/Documents/docker$ cd imagenes
+fm@fm:~/Documents/docker/imagenes$ touch Dockerfile
+fm@fm:~/Documents/docker/imagenes$ code .
+# en VS code
+	# partir siempre de algo más: una imagen basada en ubuntu
+	FROM ubuntu:latest
+	# algo más que resulte en una imagen nueva
+	RUN touch /usr/src/hola-platzi.txt
+# vuelvo a la terminal: construir una imagen -t: tag usando el directorio actual 
+fm@fm:~/Documents/docker/imagenes$ docker build -t ubuntu:platzi .
+				Sending build context to Docker daemon  2.048kB
+				Step 1/2 : FROM ubuntu:latest
+				 ---> df5de72bdb3b
+				Step 2/2 : RUN touch /usr/src/hola-platzi.txt
+				 ---> Running in 60d72eda880e
+				Removing intermediate container 60d72eda880e
+				 ---> 45f611d79888
+				Successfully built 45f611d79888
+				Successfully tagged ubuntu:platzi
+fm@fm:~/Documents/docker/imagenes$ docker image ls
+				REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+				ubuntu        platzi    45f611d79888   5 minutes ago   77.8MB
+				mongo         latest    4130848d45a9   16 hours ago    697MB
+				nginx         latest    b692a91e4e15   2 weeks ago     142MB
+				ubuntu        22.04     df5de72bdb3b   2 weeks ago     77.8MB
+				ubuntu        latest    df5de72bdb3b   2 weeks ago     77.8MB
+				ubuntu        20.04     3bc6e9f30f51   2 weeks ago     72.8MB
+				hello-world   latest    feb5d9fea6a5   11 months ago   13.3kB
+fm@fm:~/Documents/docker/imagenes$ docker run -it ubuntu:platzi
+				root@5efa96475c51:/# ll /usr/src
+				total 8
+				drwxr-xr-x 1 root root 4096 Aug 20 17:40 ./
+				drwxr-xr-x 1 root root 4096 Aug  1 13:22 ../
+				-rw-r--r-- 1 root root    0 Aug 20 17:40 hola-platzi.txt
+				root@5efa96475c51:/# exit
+				exit
+# logearse con las credenciales
+fm@fm:~/Documents/docker/imagenes$ docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+...
+Login Succeeded
+fm@fm:~/Documents/docker/imagenes$ docker image ls
+				REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
+				ubuntu        platzi    45f611d79888   15 minutes ago   77.8MB
+				mongo         latest    4130848d45a9   16 hours ago     697MB
+				nginx         latest    b692a91e4e15   2 weeks ago      142MB
+				ubuntu        22.04     df5de72bdb3b   2 weeks ago      77.8MB
+				ubuntu        latest    df5de72bdb3b   2 weeks ago      77.8MB
+				ubuntu        20.04     3bc6e9f30f51   2 weeks ago      72.8MB
+				hello-world   latest    feb5d9fea6a5   11 months ago    13.3kB
+# retaggear una imagen
+fm@fm:~/Documents/docker/imagenes$ docker tag ubuntu:platzi jofmorenore/ubuntu:platzi
+fm@fm:~/Documents/docker/imagenes$ docker image ls
+				REPOSITORY           TAG       IMAGE ID       CREATED          SIZE
+				jofmorenore/ubuntu   platzi    45f611d79888   15 minutes ago   77.8MB
+				ubuntu               platzi    45f611d79888   15 minutes ago   77.8MB
+				mongo                latest    4130848d45a9   17 hours ago     697MB
+				nginx                latest    b692a91e4e15   2 weeks ago      142MB
+				ubuntu               22.04     df5de72bdb3b   2 weeks ago      77.8MB
+				ubuntu               latest    df5de72bdb3b   2 weeks ago      77.8MB
+				ubuntu               20.04     3bc6e9f30f51   2 weeks ago      72.8MB
+				hello-world          latest    feb5d9fea6a5   11 months ago    13.3kB
+# publicar la imagen retaggeada
+fm@fm:~/Documents/docker/imagenes$ docker push jofmorenore/ubuntu:platzi
+				The push refers to repository [docker.io/jofmorenore/ubuntu]
+				da8fd71ef948: Pushed 
+				629d9dbab5ed: Mounted from library/ubuntu 
+				platzi: digest: sha256:1d8f2917d20795b796bbb04c59dacceebc1c0fc537d737dd98dc141db0f562b3 size: 736
