@@ -1,0 +1,337 @@
+#################################################################
+fm@fm:~$ cd Documents
+fm@fm:~/Documents$ cd docker
+# crear un directorio nuevo
+fm@fm:~/Documents/docker$ mkdir dockerdata
+fm@fm:~/Documents/docker$ cd dockerdata
+fm@fm:~/Documents/docker/dockerdata$ ll
+				total 8
+				drwxrwxr-x 2 fm fm 4096 ago 20 05:59 ./
+				drwxrwxr-x 3 fm fm 4096 ago 20 05:59 ../
+# correr un contenedor de mongo
+fm@fm:~/Documents/docker/dockerdata$ docker run -d --name db mongo
+				Unable to find image 'mongo:latest' locally
+				latest: Pulling from library/mongo
+				3b65ec22a9e9: Pull complete 
+				016bc871e2b3: Pull complete 
+				9ddd649edd82: Pull complete 
+				39bf776c01e4: Pull complete 
+				f7f0405a2fe3: Pull complete 
+				417812e2676c: Pull complete 
+				905384a6c9a9: Pull complete 
+				768aa2a1becc: Pull complete 
+				623c0121bf78: Pull complete 
+				Digest: sha256:6f90d92eb8ed5c52eb602a734697b329a0441949d9bb737ddcd5dae56552cac9
+				Status: Downloaded newer image for mongo:latest
+				a523dd9bdde536b0ec9b995d51033498e986afca81b22ce692456a099a758a58
+fm@fm:~/Documents/docker/dockerdata$ docker ps
+				CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS       NAMES
+				a523dd9bdde5   mongo     "docker-entrypoint.s…"   41 seconds ago   Up 40 seconds   27017/tcp   db
+# entrar al contenedor para generar algunos datos en este contenedor
+fm@fm:~/Documents/docker/dockerdata$ docker exec -it db dash
+				# mongo
+				MongoDB shell version v5.0.11
+				connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+				Implicit session: session { "id" : UUID("422e4564-4461-4a59-8311-1e651f06aa64") }
+				MongoDB server version: 5.0.11
+				================
+				...
+				---
+> show dbs
+			admin   0.000GB
+			config  0.000GB
+			local   0.000GB
+> use platzi
+			switched to db platzi
+> db.users.insert({"nombre" : "FM"})
+			WriteResult({ "nInserted" : 1 })
+> db.users.find()
+			{ "_id" : ObjectId("6300c0c2b542bd4619559e13"), "nombre" : "FM" }
+> exit
+			bye
+# exit
+fm@fm:~/Documents/docker/dockerdata$ docker rm -f db
+			db
+fm@fm:~/Documents/docker/dockerdata$ docker ps
+			CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+fm@fm:~/Documents/docker/dockerdata$ docker ps -a
+			CONTAINER ID   IMAGE     COMMAND                  CREATED        STATUS                      PORTS     NAMES
+			2582473a5f00   nginx     "/docker-entrypoint.…"   11 hours ago   Exited (137) 11 hours ago             proxy
+			f1262c40798d   ubuntu    "tail -f /dev/null"      13 hours ago   Exited (137) 12 hours ago             alwaysup
+# correr de vuelta un nuevo contenedor	
+fm@fm:~/Documents/docker/dockerdata$ docker run -d --name db mongo
+			d94665f4e69e18be872705b23becd868e568e65623a9e57c669c2911f947ac22
+fm@fm:~/Documents/docker/dockerdata$ docker exec -it db bash
+				root@d94665f4e69e:/# mongo
+				MongoDB shell version v5.0.11
+				connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+				Implicit session: session { "id" : UUID("e8ceb1dd-5faa-4c9b-93ac-66a6ebf6b69e") }
+				MongoDB server version: 5.0.11
+				================
+				...
+				---
+> use platzi
+				switched to db platzi
+> db.users.find()
+> exit
+				bye
+			root@d94665f4e69e:/# exit
+exit
+fm@fm:~/Documents/docker/dockerdata$ docker ps
+				CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS       NAMES
+				d94665f4e69e   mongo     "docker-entrypoint.s…"   37 seconds ago   Up 36 seconds   27017/tcp   db
+fm@fm:~/Documents/docker/dockerdata$ docker container prune
+				WARNING! This will remove all stopped containers.
+				Are you sure you want to continue? [y/N] y
+				Deleted Containers:
+				2582473a5f000e9fb525150737e547205d8d5d59222c216470f84cfaa3dfc2de
+				f1262c40798d0368891078ba7ee49bc78f2ab5c20975632fd17575147c7e30fa
+
+				Total reclaimed space: 1.13kB
+fm@fm:~/Documents/docker/dockerdata$ docker ps -a
+				CONTAINER ID   IMAGE     COMMAND                  CREATED              STATUS              PORTS       NAMES
+				d94665f4e69e   mongo     "docker-entrypoint.s…"   About a minute ago   Up About a minute   27017/tcp   db
+fm@fm:~/Documents/docker/dockerdata$ docker rm -f db
+				db
+fm@fm:~/Documents/docker/dockerdata$ docker ps -a
+				CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+# tener un directorio en mi PC con una versión espejada
+fm@fm:~/Documents/docker/dockerdata$ mkdir mongodata
+fm@fm:~/Documents/docker/dockerdata$ ll mongodata
+				total 8
+				drwxrwxr-x 2 fm fm 4096 ago 20 06:12 ./
+				drwxrwxr-x 3 fm fm 4096 ago 20 06:12 ../
+fm@fm:~/Documents/docker/dockerdata$ pwd
+				/home/fm/Documents/docker/dockerdata
+# hace un bind mount 
+fm@fm:~/Documents/docker/dockerdata$ docker run -d --name db -v /home/fm/Documents/docker/dockerdata:/data/db mongo
+				1aa4c35fd96826030be5690581151fdfa49511aa0a03a509dcbdc19d8a7f640a
+fm@fm:~/Documents/docker/dockerdata$ docker ps
+				CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS       NAMES
+				1aa4c35fd968   mongo     "docker-entrypoint.s…"   7 seconds ago   Up 7 seconds   27017/tcp   db
+fm@fm:~/Documents/docker/dockerdata$ docker exec -it db bash
+				root@1aa4c35fd968:/# mongo
+				MongoDB shell version v5.0.11
+				connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+				Implicit session: session { "id" : UUID("247be0cc-7f99-4cd3-8acb-f606ddaa9fe8") }
+				MongoDB server version: 5.0.11
+				================
+				...
+				---
+> use platzi
+				switched to db platzi
+> db.users.insert({"nombre": "FM"})
+				WriteResult({ "nInserted" : 1 })
+> db.users.find()
+				{ "_id" : ObjectId("6300c21c753eddbbecb6f59f"), "nombre" : "FM" }
+> exit
+				bye
+				root@1aa4c35fd968:/# exit
+exit
+fm@fm:~/Documents/docker/dockerdata$ docker ps
+				CONTAINER ID   IMAGE     COMMAND                  CREATED              STATUS              PORTS       NAMES
+				1aa4c35fd968   mongo     "docker-entrypoint.s…"   About a minute ago   Up About a minute   27017/tcp   db
+fm@fm:~/Documents/docker/dockerdata$ docker rm -f db
+				db
+fm@fm:~/Documents/docker/dockerdata$ ll mongodata
+				total 8
+				drwxrwxr-x 2 systemd-coredump fm 4096 ago 20 06:12 ./
+				drwxrwxr-x 5 systemd-coredump fm 4096 ago 20 06:14 ../
+# corro otro contenedor de mongo montandole este directorio: los datos en el contendor anterior van a estar disponibles en el nuevo
+fm@fm:~/Documents/docker/dockerdata$ docker run -d --name db -v /home/fm/Documents/docker/dockerdata:/data/db mongo
+				6f53512f6e32bdad5a93cfb7234b7dc7d9a72a53a16bf3bada9ea7d154065e60
+fm@fm:~/Documents/docker/dockerdata$ docker ps
+				CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS       NAMES
+				6f53512f6e32   mongo     "docker-entrypoint.s…"   5 seconds ago   Up 4 seconds   27017/tcp   db
+fm@fm:~/Documents/docker/dockerdata$ docker exec -it db bash
+				root@6f53512f6e32:/# mongo
+				MongoDB shell version v5.0.11
+				connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+				Implicit session: session { "id" : UUID("f1e92172-ba6e-4b5d-a497-e87f9469081c") }
+				MongoDB server version: 5.0.11
+				================
+				...
+				---
+> use platzi
+				switched to db platzi
+> db.users.find()
+				{ "_id" : ObjectId("6300c21c753eddbbecb6f59f"), "nombre" : "FM" }
+> exit
+			bye
+			root@6f53512f6e32:/# exit
+exit
+
+##################################################################################################################################
+fm@fm:~/Documents/docker/dockerdata$ docker ps -a
+				CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS       NAMES
+				6f53512f6e32   mongo     "docker-entrypoint.s…"   27 minutes ago   Up 27 minutes   27017/tcp   db
+fm@fm:~/Documents/docker/dockerdata$ docker rm -f db
+				db
+# ver que volumenes hay
+fm@fm:~/Documents/docker/dockerdata$ docker volume ls
+				DRIVER    VOLUME NAME
+				local     53ca5dc3ad621fe99c1356323d13f52525ad31e65904f11b74486050ce81b353
+				local     439d7230ea20246b9ba7c9a61e0164c4504854ef5bd87d71e40a310e47aaee4b
+				local     7813aa24513a9a185e8acab1b51dd5cb13cf4b6108228c10c5ed76df3cb0bee9
+				local     1509527e2a543e0f34c3f5eaf1f1f67f623356f44c3ba6abb98270eae23074a0
+				local     b27523c5126924317e9a0bf6b6bc3186f164086b109173a8198d57bf8cb36ead
+				local     e6f9ad241a9ac6f227d1a9780c84d2ce98fb8288aa23ead54f67eb4427c98f73
+# crear un volumen a mano
+fm@fm:~/Documents/docker/dockerdata$ docker volume create dbdata
+				dbdata
+fm@fm:~/Documents/docker/dockerdata$ docker volume ls
+				DRIVER    VOLUME NAME
+				local     53ca5dc3ad621fe99c1356323d13f52525ad31e65904f11b74486050ce81b353
+				local     439d7230ea20246b9ba7c9a61e0164c4504854ef5bd87d71e40a310e47aaee4b
+				local     7813aa24513a9a185e8acab1b51dd5cb13cf4b6108228c10c5ed76df3cb0bee9
+				local     1509527e2a543e0f34c3f5eaf1f1f67f623356f44c3ba6abb98270eae23074a0
+				local     b27523c5126924317e9a0bf6b6bc3186f164086b109173a8198d57bf8cb36ead
+				local     dbdata
+				local     e6f9ad241a9ac6f227d1a9780c84d2ce98fb8288aa23ead54f67eb4427c98f73
+# crear un nuevo contenedor y montarle este volumen dbdata en el directorio de la bd donde escribe los datos
+fm@fm:~/Documents/docker/dockerdata$ docker run -d --name db --mount src=dbdata,dst=/data/db mongo
+				115cb70fd91bb5019a9a4e33586bec90ec8c915a3eeeccd01196c92ceee4db72
+fm@fm:~/Documents/docker/dockerdata$ docker ps
+				CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS       NAMES
+				115cb70fd91b   mongo     "docker-entrypoint.s…"   8 seconds ago   Up 7 seconds   27017/tcp   db
+# descripción completa del contenedor
+fm@fm:~/Documents/docker/dockerdata$ docker inspect db
+[
+    {...
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "dbdata",
+                "Source": "/var/lib/docker/volumes/dbdata/_data",
+                "Destination": "/data/db",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            }
+	...
+]
+fm@fm:~/Documents/docker/dockerdata$ docker exec -it db bash
+				root@115cb70fd91b:/# mongo
+				MongoDB shell version v5.0.11
+				connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+				Implicit session: session { "id" : UUID("7861b17c-0368-4768-af77-5367c4080bea") }
+				MongoDB server version: 5.0.11
+				================
+				...
+				---
+> use platzi
+				switched to db platzi
+> db.users.insert({"nombre": "FM"})
+				WriteResult({ "nInserted" : 1 })
+> db.users.find()
+				{ "_id" : ObjectId("6300caf51684c157d18ed7e7"), "nombre" : "FM" }
+> exit
+				bye
+				root@115cb70fd91b:/# exit
+exit
+fm@fm:~/Documents/docker/dockerdata$ docker ps
+				CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS       NAMES
+				115cb70fd91b   mongo     "docker-entrypoint.s…"   59 seconds ago   Up 58 seconds   27017/tcp   db
+fm@fm:~/Documents/docker/dockerdata$ docker rm -f db
+				db
+fm@fm:~/Documents/docker/dockerdata$ docker run -d --name db --mount src=dbdata,dst=/data/db mongo
+				2b7b9b55db889981e7e6a7356026c956557cb367030bb292f810f19ccd12b12e
+fm@fm:~/Documents/docker/dockerdata$ docker exec -it db bash
+				root@2b7b9b55db88:/# mongo
+				MongoDB shell version v5.0.11
+				connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+				Implicit session: session { "id" : UUID("b6346eef-afd4-4424-bb28-32779f708be7") }
+				MongoDB server version: 5.0.11
+				================
+				...
+				---
+> use platzi
+				switched to db platzi
+> db.users.find()
+				{ "_id" : ObjectId("6300caf51684c157d18ed7e7"), "nombre" : "FM" }
+> exit
+				bye
+				root@2b7b9b55db88:/# exit
+exit
+
+fm@fm:~/Documents/docker/dockerdata$ ll
+				total 28
+				drwxrwxr-x 5 systemd-coredump fm               4096 ago 20 06:55 ./
+				drwxrwxr-x 3 fm               fm               4096 ago 20 05:59 ../
+				-rw------- 1 systemd-coredump root               22 ago 20 06:16 .bash_history
+				-rw------- 1 systemd-coredump root               88 ago 20 06:16 .dbshell
+				drwx------ 2 systemd-coredump systemd-coredump 4096 ago 20 06:51 diagnostic.data/
+				drwx------ 2 systemd-coredump systemd-coredump 4096 ago 20 06:17 journal/
+				drwxrwxr-x 2 systemd-coredump fm               4096 ago 20 06:12 mongodata/
+				-rw------- 1 systemd-coredump root                0 ago 20 06:14 .mongorc.js
+
+##################################################################################################################################
+fm@fm:~/Documents/docker/dockerdata$ touch prueba.txt
+fm@fm:~/Documents/docker/dockerdata$ ll
+				total 28
+				drwxrwxr-x 5 systemd-coredump fm               4096 ago 20 07:26 ./
+				drwxrwxr-x 3 fm               fm               4096 ago 20 05:59 ../
+				-rw------- 1 systemd-coredump root               22 ago 20 06:16 .bash_history
+				-rw------- 1 systemd-coredump root               88 ago 20 06:16 .dbshell
+				drwx------ 2 systemd-coredump systemd-coredump 4096 ago 20 06:51 diagnostic.data/
+				drwx------ 2 systemd-coredump systemd-coredump 4096 ago 20 06:17 journal/
+				drwxrwxr-x 2 systemd-coredump fm               4096 ago 20 06:12 mongodata/
+				-rw------- 1 systemd-coredump root                0 ago 20 06:14 .mongorc.js
+				-rw-rw-r-- 1 fm               fm                  0 ago 20 07:26 prueba.txt
+fm@fm:~/Documents/docker/dockerdata$ cat prueba.txt
+fm@fm:~/Documents/docker/dockerdata$ docker ps -a
+				CONTAINER ID   IMAGE     COMMAND               CREATED         STATUS         PORTS     NAMES
+				e02c90c9511f   ubuntu    "tail -f /dev/null"   4 minutes ago   Up 4 minutes             copytest
+fm@fm:~/Documents/docker/dockerdata$ docker rm -f copytest
+				copytest
+fm@fm:~/Documents/docker/dockerdata$ docker ps -a
+				CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+fm@fm:~/Documents/docker/dockerdata$ docker run -d --name copytest ubuntu tail -f /dev/null
+				e55646c446dd00bda824c5e2288cee4eeca872efe6da187301f50edeb79539f4
+fm@fm:~/Documents/docker/dockerdata$ docker exec -it copytest bash
+				root@e55646c446dd:/# ll
+				total 56
+				...
+				root@e55646c446dd:/# mkdir testing
+				root@e55646c446dd:/# ll
+				total 60
+				...
+				drwxr-xr-x   2 root root 4096 Aug 20 12:27 testing/
+				root@e55646c446dd:/# exit
+exit
+# copiar el archivo de prueba dentro del contenedor de testingb
+fm@fm:~/Documents/docker/dockerdata$ docker cp prueba.txt copytest:/testing/test.txt
+fm@fm:~/Documents/docker/dockerdata$ docker exec -it copytest bash
+				root@e55646c446dd:/# ll
+				total 60
+				...
+				drwxr-xr-x   2 root root 4096 Aug 20 12:28 testing/
+				root@e55646c446dd:/# cd testing
+				root@e55646c446dd:/testing# ll
+				total 8
+				drwxr-xr-x 2 root root 4096 Aug 20 12:28 ./
+				drwxr-xr-x 1 root root 4096 Aug 20 12:28 ../
+				-rw-rw-r-- 1 1000 1000    0 Aug 20 12:26 test.txt
+				root@e55646c446dd:/testing# exit
+exit
+# extraer de vuelta a la máquina con otro nombre
+fm@fm:~/Documents/docker/dockerdata$ docker cp copytest:/testing localtesting
+fm@fm:~/Documents/docker/dockerdata$ ll
+				total 32
+				drwxrwxr-x 6 systemd-coredump fm               4096 ago 20 07:28 ./
+				drwxrwxr-x 3 fm               fm               4096 ago 20 05:59 ../
+				-rw------- 1 systemd-coredump root               22 ago 20 06:16 .bash_history
+				-rw------- 1 systemd-coredump root               88 ago 20 06:16 .dbshell
+				drwx------ 2 systemd-coredump systemd-coredump 4096 ago 20 06:51 diagnostic.data/
+				drwx------ 2 systemd-coredump systemd-coredump 4096 ago 20 06:17 journal/
+				drwxr-xr-x 2 fm               fm               4096 ago 20 07:28 localtesting/
+				drwxrwxr-x 2 systemd-coredump fm               4096 ago 20 06:12 mongodata/
+				-rw------- 1 systemd-coredump root                0 ago 20 06:14 .mongorc.js
+				-rw-rw-r-- 1 fm               fm                  0 ago 20 07:26 prueba.txt
+fm@fm:~/Documents/docker/dockerdata$ cd localtesting
+fm@fm:~/Documents/docker/dockerdata/localtesting$ ll
+				total 8
+				drwxr-xr-x 2 fm               fm 4096 ago 20 07:28 ./
+				drwxrwxr-x 6 systemd-coredump fm 4096 ago 20 07:28 ../
+				-rw-rw-r-- 1 fm               fm    0 ago 20 07:26 test.txt
