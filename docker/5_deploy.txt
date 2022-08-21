@@ -391,3 +391,145 @@ fm@fm:~/Documents/docker/imagenes/docker$ docker run --rm -p 3000:3000 -v /home/
 				(node:33) Warning: Accessing non-existent property 'remove' of module exports inside circular dependency
 				(node:33) Warning: Accessing non-existent property 'updateOne' of module exports inside circular dependency
 				Server listening on port 3000!
+
+##################################################################################################################
+fm@fm:~/Documents/docker/imagenes/docker$ docker network ls
+				NETWORK ID     NAME      DRIVER    SCOPE
+				d2bf858c78a5   bridge    bridge    local
+				9044d9c875fa   host      host      local
+				e8b8530461d3   none      null      local
+# permite que otros contenedores se conecten
+fm@fm:~/Documents/docker/imagenes/docker$ docker network create --attachable platzinet
+				7ee4f32bc3b2335bb396eaa2c05ff62d2b39c134057d05b98d910dbeed91e9ea
+fm@fm:~/Documents/docker/imagenes/docker$ docker network inspect platzinet
+				[
+					{
+						"Name": "platzinet",
+						"Id": "7ee4f32bc3b2335bb396eaa2c05ff62d2b39c134057d05b98d910dbeed91e9ea",
+						"Created": "2022-08-20T21:58:03.691510191-05:00",
+						"Scope": "local",
+						"Driver": "bridge",
+						"EnableIPv6": false,
+						"IPAM": {
+							"Driver": "default",
+							"Options": {},
+							"Config": [
+								{
+									"Subnet": "172.18.0.0/16",
+									"Gateway": "172.18.0.1"
+								}
+							]
+						},
+						"Internal": false,
+						"Attachable": true,
+						"Ingress": false,
+						"ConfigFrom": {
+							"Network": ""
+						},
+						"ConfigOnly": false,
+						"Containers": {},
+						"Options": {},
+						"Labels": {}
+					}
+				]
+# crea el contenedor de la bd
+fm@fm:~/Documents/docker/imagenes/docker$ docker run -d --name db mongo
+				ba6d4b331e2400d29cb2d6a92c2535c17e4b594977de33f2e116050b8a5a19f7
+#  conectar al contenedor nuevo a esa red
+fm@fm:~/Documents/docker/imagenes/docker$ docker network connect platzinet db
+fm@fm:~/Documents/docker/imagenes/docker$ docker network inspect platzinet
+				[
+					{
+						"Name": "platzinet",
+						"Id": "7ee4f32bc3b2335bb396eaa2c05ff62d2b39c134057d05b98d910dbeed91e9ea",
+						"Created": "2022-08-20T21:58:03.691510191-05:00",
+						"Scope": "local",
+						"Driver": "bridge",
+						"EnableIPv6": false,
+						"IPAM": {
+							"Driver": "default",
+							"Options": {},
+							"Config": [
+								{
+									"Subnet": "172.18.0.0/16",
+									"Gateway": "172.18.0.1"
+								}
+							]
+						},
+						"Internal": false,
+						"Attachable": true,
+						"Ingress": false,
+						"ConfigFrom": {
+							"Network": ""
+						},
+						"ConfigOnly": false,
+						"Containers": {
+							"ba6d4b331e2400d29cb2d6a92c2535c17e4b594977de33f2e116050b8a5a19f7": {
+								"Name": "db",
+								"EndpointID": "1a2d26d85a251ac8cbeb233b3a4189c9d1df11b63f42b0886d2fd679ec2b2a91",
+								"MacAddress": "02:42:ac:12:00:02",
+								"IPv4Address": "172.18.0.2/16",
+								"IPv6Address": ""
+							}
+						},
+						"Options": {},
+						"Labels": {}
+					}
+				]
+# correr la aplicación conectada a la red
+fm@fm:~/Documents/docker/imagenes/docker$ docker run -d --name app -p 3000:3000 --env MONGO_URL=mongodb://db:27017/test platziapp
+				42fcf5ee0289fa335f1ddafd98956d46cb7dd55979ccf01bac379e3bc027a1d9
+fm@fm:~/Documents/docker/imagenes/docker$ docker ps
+				CONTAINER ID   IMAGE       COMMAND                  CREATED          STATUS          PORTS                                       NAMES
+				42fcf5ee0289   platziapp   "docker-entrypoint.s…"   6 seconds ago    Up 5 seconds    0.0.0.0:3000->3000/tcp, :::3000->3000/tcp   app
+				ba6d4b331e24   mongo       "docker-entrypoint.s…"   42 seconds ago   Up 41 seconds   27017/tcp                                   db
+# conectar el contenedor a la red
+fm@fm:~/Documents/docker/imagenes/docker$ docker network connect platzinet app
+fm@fm:~/Documents/docker/imagenes/docker$ docker network inspect platzinet
+				[
+					{
+						"Name": "platzinet",
+						"Id": "7ee4f32bc3b2335bb396eaa2c05ff62d2b39c134057d05b98d910dbeed91e9ea",
+						"Created": "2022-08-20T21:58:03.691510191-05:00",
+						"Scope": "local",
+						"Driver": "bridge",
+						"EnableIPv6": false,
+						"IPAM": {
+							"Driver": "default",
+							"Options": {},
+							"Config": [
+								{
+									"Subnet": "172.18.0.0/16",
+									"Gateway": "172.18.0.1"
+								}
+							]
+						},
+						"Internal": false,
+						"Attachable": true,
+						"Ingress": false,
+						"ConfigFrom": {
+							"Network": ""
+						},
+						"ConfigOnly": false,
+						"Containers": {
+							"42fcf5ee0289fa335f1ddafd98956d46cb7dd55979ccf01bac379e3bc027a1d9": {
+								"Name": "app",
+								"EndpointID": "1b14d78250f04a0dd8e4b9210b2c9e5105a488ba2494f16223166dba72200aad",
+								"MacAddress": "02:42:ac:12:00:03",
+								"IPv4Address": "172.18.0.3/16",
+								"IPv6Address": ""
+							},
+							"ba6d4b331e2400d29cb2d6a92c2535c17e4b594977de33f2e116050b8a5a19f7": {
+								"Name": "db",
+								"EndpointID": "1a2d26d85a251ac8cbeb233b3a4189c9d1df11b63f42b0886d2fd679ec2b2a91",
+								"MacAddress": "02:42:ac:12:00:02",
+								"IPv4Address": "172.18.0.2/16",
+								"IPv6Address": ""
+							}
+						},
+						"Options": {},
+						"Labels": {}
+					}
+				]
+fm@fm:~/Documents/docker/imagenes/docker$ 
+# en el navegador localhost:3000
