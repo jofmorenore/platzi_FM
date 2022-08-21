@@ -64,3 +64,115 @@ fm@fm:~/Documents/docker/imagenes/docker$ docker ps
 				CONTAINER ID   IMAGE       COMMAND                  CREATED              STATUS         PORTS                                       NAMES
 				27a0a3b5b6b9   platziapp   "docker-entrypoint.s…"   About a minute ago   Up 3 seconds   0.0.0.0:3000->3000/tcp, :::3000->3000/tcp   docker_app_1
 				58ae61c7c411   mongo       "docker-entrypoint.s…"   About a minute ago   Up 4 seconds   27017/tcp                                   docker_db_1
+
+############################################################################################################################
+fm@fm:~/Documents/docker/imagenes/docker$ docker network ls
+				NETWORK ID     NAME             DRIVER    SCOPE
+				d2bf858c78a5   bridge           bridge    local
+				7dc87e7f1dae   docker_default   bridge    local
+				9044d9c875fa   host             host      local
+				e8b8530461d3   none             null      local
+				7ee4f32bc3b2   platzinet        bridge    local
+fm@fm:~/Documents/docker/imagenes/docker$ docker network inspect docker_default
+				[
+					{
+						"Name": "docker_default",
+						"Id": "7dc87e7f1daeaffa58d5658b0c0c8d69354cc9ceef83d81f140303a95a89ac74",
+						"Created": "2022-08-20T22:44:27.26747803-05:00",
+						"Scope": "local",
+						"Driver": "bridge",
+						"EnableIPv6": false,
+						"IPAM": {
+							"Driver": "default",
+							"Options": null,
+							"Config": [
+								{
+									"Subnet": "172.19.0.0/16",
+									"Gateway": "172.19.0.1"
+								}
+							]
+						},
+						"Internal": false,
+						"Attachable": true,
+						"Ingress": false,
+						"ConfigFrom": {
+							"Network": ""
+						},
+						"ConfigOnly": false,
+						"Containers": {
+							"27a0a3b5b6b95be6af47f9fdc16e645a0240346924f15fcf1e0bcd84fbce9470": {
+								"Name": "docker_app_1",
+								"EndpointID": "1260c03b93a1cd3f97d6aae50e150a7e3f074ffad6138248e8f1baee2470f4b7",
+								"MacAddress": "02:42:ac:13:00:03",
+								"IPv4Address": "172.19.0.3/16",
+								"IPv6Address": ""
+							},
+							"58ae61c7c411c7f3d0957a6f86ac8dbe39239b51ddbb9c1f79c95cf30893dced": {
+								"Name": "docker_db_1",
+								"EndpointID": "06d31eef5bbf9fe4ccb52cf75d27769495ccb1a5f86d6567c80e4f53278072aa",
+								"MacAddress": "02:42:ac:13:00:02",
+								"IPv4Address": "172.19.0.2/16",
+								"IPv6Address": ""
+							}
+						},
+						"Options": {},
+						"Labels": {
+							"com.docker.compose.network": "default",
+							"com.docker.compose.project": "docker",
+							"com.docker.compose.version": "1.25.0"
+						}
+					}
+				]
+# ver los logs de los servicios de docker compose
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose logs
+Attaching to docker_app_1, docker_db_1
+...
+# si sólo quiero ver el de uno
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose logs app
+Attaching to docker_app_1
+...
+# hacer un follow a los logs
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose logs -f app
+Attaching to docker_app_1
+...
+^CERROR: Aborting.
+# también podria ver los logs de varios servicios
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose logs -f app db
+Attaching to docker_app_1, docker_db_1
+...
+^CERROR: Aborting.
+# correr un comando en un contenedor
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose exec app bash
+				root@27a0a3b5b6b9:/usr/src# ll -lac
+				bash: ll: command not found
+				root@27a0a3b5b6b9:/usr/src# ls -lac
+				total 148
+				drwxr-xr-x   1 root root   4096 Aug 20 23:51 .
+				drwxr-xr-x   1 root root   4096 Aug 20 23:51 ..
+				-rw-rw-r--   1 root root   1072 Aug 20 23:51 LICENSE
+				drwxrwxr-x   4 root root   4096 Aug 20 23:51 avanzado
+				drwxrwxr-x   2 root root   4096 Aug 20 23:51 build
+				-rw-rw-r--   1 root root    196 Aug 20 23:51 docker-compose.yml
+				-rw-rw-r--   1 root root    561 Aug 20 23:51 index.js
+				drwxr-xr-x 243 root root  12288 Aug 20 23:50 node_modules
+				-rw-rw-r--   1 root root 101649 Aug 20 23:51 package-lock.json
+				-rw-rw-r--   1 root root    662 Aug 20 23:51 package.json
+				drwxrwxr-x   2 root root   4096 Aug 20 23:51 test
+				root@27a0a3b5b6b9:/usr/src# exit
+				exit
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose ps
+					Name                  Command               State                 Ports               
+				------------------------------------------------------------------------------------------
+				docker_app_1   docker-entrypoint.sh npx n ...   Up      0.0.0.0:3000->3000/tcp,:::3000->30
+																		00/tcp                            
+				docker_db_1    docker-entrypoint.sh mongod      Up      27017/tcp                         
+# limpiar el estado, destruyendo contenedores, redes
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose down
+				Stopping docker_app_1 ... done
+				Stopping docker_db_1  ... done
+				Removing docker_app_1 ... done
+				Removing docker_db_1  ... done
+				Removing network docker_default
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose ps
+				Name   Command   State   Ports
+				------------------------------
