@@ -176,3 +176,187 @@ fm@fm:~/Documents/docker/imagenes/docker$ docker-compose down
 fm@fm:~/Documents/docker/imagenes/docker$ docker-compose ps
 				Name   Command   State   Ports
 				------------------------------
+
+############################################################################################################################
+# en VS code reemplaza image por build: .
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose build
+				db uses an image, skipping
+				Building app
+				Step 1/7 : FROM node:14
+				 ---> 52e5cabe9b9c
+				Step 2/7 : COPY ["package.json","package-lock.json", "/usr/src/"]
+				 ---> 79abcd703e05
+				Step 3/7 : WORKDIR /usr/src
+				 ---> Running in 2088bd6809a5
+				Removing intermediate container 2088bd6809a5
+				 ---> b96712666117
+				Step 4/7 : RUN npm install
+				 ---> Running in 5725e063445d
+
+				> nodemon@1.18.6 postinstall /usr/src/node_modules/nodemon
+				> node bin/postinstall || exit 0
+
+				Love nodemon? You can now support the project via the open collective:
+				 > https://opencollective.com/nodemon/donate
+
+				npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.7 (node_modules/fsevents):
+				npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.7: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"x64"})
+
+				added 287 packages from 588 contributors and audited 355 packages in 19.562s
+				found 55 vulnerabilities (8 moderate, 30 high, 17 critical)
+				  run `npm audit fix` to fix them, or `npm audit` for details
+				Removing intermediate container 5725e063445d
+				 ---> f989c8d95f44
+				Step 5/7 : COPY [".", "/usr/src/"]
+				 ---> 4599fe479f85
+				Step 6/7 : EXPOSE 3000
+				 ---> Running in 9934be191524
+				Removing intermediate container 9934be191524
+				 ---> 9ecfa96eee00
+				Step 7/7 : CMD ["node", "index.js"]
+				 ---> Running in f0a3f2c3eb51
+				Removing intermediate container f0a3f2c3eb51
+				 ---> 85e4ca89e516
+
+				Successfully built 85e4ca89e516
+				Successfully tagged docker_app:latest
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up -d
+				Creating network "docker_default" with the default driver
+				Creating docker_db_1 ... done
+				Creating docker_app_1 ... done
+fm@fm:~/Documents/docker/imagenes/docker$ docker ps
+				CONTAINER ID   IMAGE        COMMAND                  CREATED          STATUS          PORTS                                       NAMES
+				0274b76c6340   docker_app   "docker-entrypoint.s…"   12 seconds ago   Up 11 seconds   0.0.0.0:3000->3000/tcp, :::3000->3000/tcp   docker_app_1
+				a995be54356a   mongo        "docker-entrypoint.s…"   13 seconds ago   Up 12 seconds   27017/tcp                                   docker_db_1
+# en VS code cambiar BOOM por PUM
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up -d
+				docker_db_1 is up-to-date
+				docker_app_1 is up-to-date
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose build app
+				Building app
+				Step 1/7 : FROM node:14
+				 ---> 52e5cabe9b9c
+				Step 2/7 : COPY ["package.json","package-lock.json", "/usr/src/"]
+				 ---> Using cache
+				 ---> 79abcd703e05
+				Step 3/7 : WORKDIR /usr/src
+				 ---> Using cache
+				 ---> b96712666117
+				Step 4/7 : RUN npm install
+				 ---> Using cache
+				 ---> f989c8d95f44
+				Step 5/7 : COPY [".", "/usr/src/"]
+				 ---> 9449064ee739
+				Step 6/7 : EXPOSE 3000
+				 ---> Running in b5aa8fefd643
+				Removing intermediate container b5aa8fefd643
+				 ---> 2a25a037394d
+				Step 7/7 : CMD ["node", "index.js"]
+				 ---> Running in 06168e94efe3
+				Removing intermediate container 06168e94efe3
+				 ---> 04dd92f3d54a
+
+				Successfully built 04dd92f3d54a
+				Successfully tagged docker_app:latest
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up -d
+				docker_db_1 is up-to-date
+				Recreating docker_app_1 ... done
+# en VS code agregar volumes: - .:/usr/src
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up -d
+				docker_db_1 is up-to-date
+				Recreating docker_app_1 ... done
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose ps
+					Name                  Command               State      Ports  
+				------------------------------------------------------------------
+				docker_app_1   docker-entrypoint.sh node  ...   Exit 1            
+				docker_db_1    docker-entrypoint.sh mongod      Up       27017/tcp
+# en el navegador localhost:3000
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose logs app
+				Attaching to docker_app_1
+				app_1  | internal/modules/cjs/loader.js:905
+				app_1  |   throw err;
+				app_1  |   ^
+				app_1  | 
+				app_1  | Error: Cannot find module 'express'
+				app_1  | Require stack:
+				app_1  | - /usr/src/index.js
+				app_1  |     at Function.Module._resolveFilename (internal/modules/cjs/loader.js:902:15)
+				app_1  |     at Function.Module._load (internal/modules/cjs/loader.js:746:27)
+				app_1  |     at Module.require (internal/modules/cjs/loader.js:974:19)
+				app_1  |     at require (internal/modules/cjs/helpers.js:101:18)
+				app_1  |     at Object.<anonymous> (/usr/src/index.js:1:17)
+				app_1  |     at Module._compile (internal/modules/cjs/loader.js:1085:14)
+				app_1  |     at Object.Module._extensions..js (internal/modules/cjs/loader.js:1114:10)
+				app_1  |     at Module.load (internal/modules/cjs/loader.js:950:32)
+				app_1  |     at Function.Module._load (internal/modules/cjs/loader.js:790:12)
+				app_1  |     at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:75:12) {
+				app_1  |   code: 'MODULE_NOT_FOUND',
+				app_1  |   requireStack: [ '/usr/src/index.js' ]
+				app_1  | }
+# en VS code agregar volumes: - .:/usr/src
+# - /usr/src/node_modules
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up -d
+				docker_db_1 is up-to-date
+				Recreating docker_app_1 ... done
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose ps
+					Name                  Command               State                 Ports               
+				------------------------------------------------------------------------------------------
+				docker_app_1   docker-entrypoint.sh node  ...   Up      0.0.0.0:3000->3000/tcp,:::3000->30
+																		00/tcp                            
+				docker_db_1    docker-entrypoint.sh mongod      Up      27017/tcp                         
+# en VS code command: nodemon index.js
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up -d
+				docker_db_1 is up-to-date
+				docker_app_1 is up-to-date
+# en VS code command: npx nodemon index.js
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up -d
+				docker_db_1 is up-to-date
+				Recreating docker_app_1 ... done
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose logs -f app
+				Attaching to docker_app_1
+				app_1  | internal/modules/cjs/loader.js:905
+				app_1  |   throw err;
+				app_1  |   ^
+				app_1  | 
+				app_1  | Error: Cannot find module '/usr/src/nodemon'
+				app_1  |     at Function.Module._resolveFilename (internal/modules/cjs/loader.js:902:15)
+				app_1  |     at Function.Module._load (internal/modules/cjs/loader.js:746:27)
+				app_1  |     at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:75:12)
+				app_1  |     at internal/main/run_main_module.js:17:47 {
+				app_1  |   code: 'MODULE_NOT_FOUND',
+				app_1  |   requireStack: []
+				app_1  | }
+				docker_app_1 exited with code 1
+# en VS code cambio BD por Base de datos!!!!!!
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up -d
+				docker_db_1 is up-to-date
+				Recreating docker_app_1 ... done
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose logs -f app
+				Attaching to docker_app_1
+				app_1  | [nodemon] 1.18.6
+				app_1  | [nodemon] to restart at any time, enter `rs`
+				app_1  | [nodemon] watching: *.*
+				app_1  | [nodemon] starting `node index.js`
+				app_1  | (node:20) Warning: Accessing non-existent property 'count' of module exports inside circular dependency
+				app_1  | (Use `node --trace-warnings ...` to show where the warning was created)
+				app_1  | (node:20) Warning: Accessing non-existent property 'findOne' of module exports inside circular dependency
+				app_1  | (node:20) Warning: Accessing non-existent property 'remove' of module exports inside circular dependency
+				app_1  | (node:20) Warning: Accessing non-existent property 'updateOne' of module exports inside circular dependency
+				app_1  | Server listening on port 3000!
+				app_1  | [nodemon] restarting due to changes...
+				app_1  | [nodemon] starting `node index.js`
+				app_1  | (node:29) Warning: Accessing non-existent property 'count' of module exports inside circular dependency
+				app_1  | (Use `node --trace-warnings ...` to show where the warning was created)
+				app_1  | (node:29) Warning: Accessing non-existent property 'findOne' of module exports inside circular dependency
+				app_1  | (node:29) Warning: Accessing non-existent property 'remove' of module exports inside circular dependency
+				app_1  | (node:29) Warning: Accessing non-existent property 'updateOne' of module exports inside circular dependency
+				app_1  | Server listening on port 3000!
+				app_1  | [nodemon] restarting due to changes...
+				app_1  | [nodemon] starting `node index.js`
+				app_1  | (node:42) Warning: Accessing non-existent property 'count' of module exports inside circular dependency
+				app_1  | (Use `node --trace-warnings ...` to show where the warning was created)
+				app_1  | (node:42) Warning: Accessing non-existent property 'findOne' of module exports inside circular dependency
+				app_1  | (node:42) Warning: Accessing non-existent property 'remove' of module exports inside circular dependency
+				app_1  | (node:42) Warning: Accessing non-existent property 'updateOne' of module exports inside circular dependency
+				app_1  | Server listening on port 3000!
+				^CERROR: Aborting.
