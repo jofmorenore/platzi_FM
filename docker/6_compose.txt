@@ -1,0 +1,66 @@
+# en el archivo en formato .yml cambiar version: "3.7"
+fm@fm:~/Documents/docker/imagenes/docker$ docker compose version
+				Docker Compose version v2.6.0
+# crea y conecta contenedores
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up
+				Starting docker_db_1 ... done
+				Starting docker_app_1 ... done
+				Attaching to docker_db_1, docker_app_1
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.955+00:00"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"thread1","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":13},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":13},"outgoing":{"minWireVersion":0,"maxWireVersion":13},"isInternalClient":true}}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.955+00:00"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"thread1","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.955+00:00"},"s":"W",  "c":"ASIO",     "id":22601,   "ctx":"thread1","msg":"No TransportLayer configured during NetworkInterface startup"}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.955+00:00"},"s":"I",  "c":"NETWORK",  "id":4648601, "ctx":"thread1","msg":"Implicit TCP FastOpen unavailable. If TCP FastOpen is required, set tcpFastOpenServer, tcpFastOpenClient, and tcpFastOpenQueueSize."}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.956+00:00"},"s":"W",  "c":"ASIO",     "id":22601,   "ctx":"thread1","msg":"No TransportLayer configured during NetworkInterface startup"}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.956+00:00"},"s":"I",  "c":"REPL",     "id":5123008, "ctx":"thread1","msg":"Successfully registered PrimaryOnlyService","attr":{"service":"TenantMigrationDonorService","ns":"config.tenantMigrationDonors"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.956+00:00"},"s":"I",  "c":"REPL",     "id":5123008, "ctx":"thread1","msg":"Successfully registered PrimaryOnlyService","attr":{"service":"TenantMigrationRecipientService","ns":"config.tenantMigrationRecipients"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.956+00:00"},"s":"I",  "c":"CONTROL",  "id":5945603, "ctx":"thread1","msg":"Multi threading initialized"}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.956+00:00"},"s":"I",  "c":"CONTROL",  "id":4615611, "ctx":"initandlisten","msg":"MongoDB starting","attr":{"pid":1,"port":27017,"dbPath":"/data/db","architecture":"64-bit","host":"58ae61c7c411"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.956+00:00"},"s":"I",  "c":"CONTROL",  "id":23403,   "ctx":"initandlisten","msg":"Build Info","attr":{"buildInfo":{"version":"5.0.11","gitVersion":"d08c3c41c105cde798ca934e3ac3426ac11b57c3","openSSLVersion":"OpenSSL 1.1.1f  31 Mar 2020","modules":[],"allocator":"tcmalloc","environment":{"distmod":"ubuntu2004","distarch":"x86_64","target_arch":"x86_64"}}}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.956+00:00"},"s":"I",  "c":"CONTROL",  "id":51765,   "ctx":"initandlisten","msg":"Operating System","attr":{"os":{"name":"Ubuntu","version":"20.04"}}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.956+00:00"},"s":"I",  "c":"CONTROL",  "id":21951,   "ctx":"initandlisten","msg":"Options set by command line","attr":{"options":{"net":{"bindIp":"*"}}}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.957+00:00"},"s":"I",  "c":"STORAGE",  "id":22270,   "ctx":"initandlisten","msg":"Storage engine to use detected by data files","attr":{"dbpath":"/data/db","storageEngine":"wiredTiger"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.957+00:00"},"s":"I",  "c":"STORAGE",  "id":22297,   "ctx":"initandlisten","msg":"Using the XFS filesystem is strongly recommended with the WiredTiger storage engine. See http://dochub.mongodb.org/core/prodnotes-filesystem","tags":["startupWarnings"]}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:04.957+00:00"},"s":"I",  "c":"STORAGE",  "id":22315,   "ctx":"initandlisten","msg":"Opening WiredTiger","attr":{"config":"create,cache_size=15500M,session_max=33000,eviction=(threads_min=4,threads_max=4),config_base=false,statistics=(fast),log=(enabled=true,archive=true,path=journal,compressor=snappy),builtin_extension_config=(zstd=(compression_level=6)),file_manager=(close_idle_time=600,close_scan_interval=10,close_handle_minimum=250),statistics_log=(wait=0),verbose=[recovery_progress,checkpoint_progress,compact_progress],"}}
+				app_1  | [nodemon] 1.18.6
+				app_1  | [nodemon] to restart at any time, enter `rs`
+				app_1  | [nodemon] watching: *.*
+				app_1  | [nodemon] starting `node index.js`
+				app_1  | (node:20) Warning: Accessing non-existent property 'count' of module exports inside circular dependency
+				app_1  | (Use `node --trace-warnings ...` to show where the warning was created)
+				app_1  | (node:20) Warning: Accessing non-existent property 'findOne' of module exports inside circular dependency
+				app_1  | (node:20) Warning: Accessing non-existent property 'remove' of module exports inside circular dependency
+				app_1  | (node:20) Warning: Accessing non-existent property 'updateOne' of module exports inside circular dependency
+				app_1  | Server listening on port 3000!
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.545+00:00"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1661053505:545420][1:0x7fdd0e98bc80], txn-recover: [WT_VERB_RECOVERY_PROGRESS] Recovering log 1 through 2"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.578+00:00"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1661053505:578477][1:0x7fdd0e98bc80], txn-recover: [WT_VERB_RECOVERY_PROGRESS] Recovering log 2 through 2"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.612+00:00"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1661053505:612138][1:0x7fdd0e98bc80], txn-recover: [WT_VERB_RECOVERY_ALL] Main recovery loop: starting at 1/24704 to 2/256"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.647+00:00"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1661053505:647259][1:0x7fdd0e98bc80], txn-recover: [WT_VERB_RECOVERY_PROGRESS] Recovering log 1 through 2"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.675+00:00"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1661053505:675186][1:0x7fdd0e98bc80], txn-recover: [WT_VERB_RECOVERY_PROGRESS] Recovering log 2 through 2"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.692+00:00"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1661053505:692326][1:0x7fdd0e98bc80], txn-recover: [WT_VERB_RECOVERY_ALL] Set global recovery timestamp: (0, 0)"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.692+00:00"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1661053505:692334][1:0x7fdd0e98bc80], txn-recover: [WT_VERB_RECOVERY_ALL] Set global oldest timestamp: (0, 0)"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.693+00:00"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1661053505:693691][1:0x7fdd0e98bc80], WT_SESSION.checkpoint: [WT_VERB_CHECKPOINT_PROGRESS] saving checkpoint snapshot min: 1, snapshot max: 1 snapshot count: 0, oldest timestamp: (0, 0) , meta checkpoint timestamp: (0, 0) base write gen: 7"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.698+00:00"},"s":"I",  "c":"STORAGE",  "id":4795906, "ctx":"initandlisten","msg":"WiredTiger opened","attr":{"durationMillis":741}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.698+00:00"},"s":"I",  "c":"RECOVERY", "id":23987,   "ctx":"initandlisten","msg":"WiredTiger recoveryTimestamp","attr":{"recoveryTimestamp":{"$timestamp":{"t":0,"i":0}}}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.699+00:00"},"s":"I",  "c":"STORAGE",  "id":4366408, "ctx":"initandlisten","msg":"No table logging settings modifications are required for existing WiredTiger tables","attr":{"loggingEnabled":true}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.702+00:00"},"s":"I",  "c":"STORAGE",  "id":22262,   "ctx":"initandlisten","msg":"Timestamp monitor starting"}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.704+00:00"},"s":"W",  "c":"CONTROL",  "id":22120,   "ctx":"initandlisten","msg":"Access control is not enabled for the database. Read and write access to data and configuration is unrestricted","tags":["startupWarnings"]}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.705+00:00"},"s":"I",  "c":"NETWORK",  "id":4915702, "ctx":"initandlisten","msg":"Updated wire specification","attr":{"oldSpec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":13},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":13},"outgoing":{"minWireVersion":0,"maxWireVersion":13},"isInternalClient":true},"newSpec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":13},"incomingInternalClient":{"minWireVersion":13,"maxWireVersion":13},"outgoing":{"minWireVersion":13,"maxWireVersion":13},"isInternalClient":true}}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.705+00:00"},"s":"I",  "c":"STORAGE",  "id":5071100, "ctx":"initandlisten","msg":"Clearing temp directory"}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.705+00:00"},"s":"I",  "c":"CONTROL",  "id":20536,   "ctx":"initandlisten","msg":"Flow Control is enabled on this deployment"}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.706+00:00"},"s":"I",  "c":"FTDC",     "id":20625,   "ctx":"initandlisten","msg":"Initializing full-time diagnostic data capture","attr":{"dataDirectory":"/data/db/diagnostic.data"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.707+00:00"},"s":"I",  "c":"REPL",     "id":6015317, "ctx":"initandlisten","msg":"Setting new configuration state","attr":{"newState":"ConfigReplicationDisabled","oldState":"ConfigPreStart"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.708+00:00"},"s":"I",  "c":"NETWORK",  "id":23015,   "ctx":"listener","msg":"Listening on","attr":{"address":"/tmp/mongodb-27017.sock"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.708+00:00"},"s":"I",  "c":"NETWORK",  "id":23015,   "ctx":"listener","msg":"Listening on","attr":{"address":"0.0.0.0"}}
+				db_1   | {"t":{"$date":"2022-08-21T03:45:05.708+00:00"},"s":"I",  "c":"NETWORK",  "id":23016,   "ctx":"listener","msg":"Waiting for connections","attr":{"port":27017,"ssl":"off"}}
+				^CGracefully stopping... (press Ctrl+C again to force)
+				Stopping docker_app_1 ... done
+				Stopping docker_db_1  ... done
+fm@fm:~/Documents/docker/imagenes/docker$ 
+# crea y conecta contenedores sin tener el attachment del output
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up -d
+				Starting docker_db_1 ... done
+				Starting docker_app_1 ... done
+fm@fm:~/Documents/docker/imagenes/docker$ docker ps
+				CONTAINER ID   IMAGE       COMMAND                  CREATED              STATUS         PORTS                                       NAMES
+				27a0a3b5b6b9   platziapp   "docker-entrypoint.s…"   About a minute ago   Up 3 seconds   0.0.0.0:3000->3000/tcp, :::3000->3000/tcp   docker_app_1
+				58ae61c7c411   mongo       "docker-entrypoint.s…"   About a minute ago   Up 4 seconds   27017/tcp                                   docker_db_1
