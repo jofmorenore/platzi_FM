@@ -98,3 +98,296 @@ fm@fm:~/Documents/docker/imagenes/docker$ docker run --rm -p 3000:3000 platziapp
 				Server listening on port 3000!
 # en el navegador
 http://localhost:3000
+
+##################################################################################################################
+fm@fm:~/Documents/docker/imagenes/docker$ docker image ls
+				REPOSITORY           TAG       IMAGE ID       CREATED         SIZE
+				ubuntu               platzi    12d22e475260   3 hours ago     77.8MB
+				jofmorenore/ubuntu   platzi    45f611d79888   6 hours ago     77.8MB
+				mongo                latest    4130848d45a9   22 hours ago    697MB
+				node                 14        52e5cabe9b9c   2 weeks ago     914MB
+				nginx                latest    b692a91e4e15   2 weeks ago     142MB
+				ubuntu               22.04     df5de72bdb3b   2 weeks ago     77.8MB
+				ubuntu               latest    df5de72bdb3b   2 weeks ago     77.8MB
+				ubuntu               20.04     3bc6e9f30f51   2 weeks ago     72.8MB
+				node                 12        6c8de432fc7f   4 months ago    918MB
+				hello-world          latest    feb5d9fea6a5   11 months ago   13.3kB
+fm@fm:~/Documents/docker/imagenes/docker$ docker build -t platziapp . 
+				Sending build context to Docker daemon  118.3kB
+				Step 1/6 : FROM node:12
+				 ---> 6c8de432fc7f
+				Step 2/6 : COPY [".", "/usr/src/"]
+				 ---> 0379e1c4aa73
+				Step 3/6 : WORKDIR /usr/src
+				 ---> Running in cf30cfb12735
+				Removing intermediate container cf30cfb12735
+				 ---> b6af766e75db
+				Step 4/6 : RUN npm install
+				 ---> Running in 65450c7ef06c
+
+				> nodemon@1.18.6 postinstall /usr/src/node_modules/nodemon
+				> node bin/postinstall || exit 0
+
+				Love nodemon? You can now support the project via the open collective:
+				 > https://opencollective.com/nodemon/donate
+
+				npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.7 (node_modules/fsevents):
+				npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.7: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"x64"})
+
+				added 287 packages from 588 contributors and audited 355 packages in 8.632s
+				found 55 vulnerabilities (8 moderate, 30 high, 17 critical)
+				  run `npm audit fix` to fix them, or `npm audit` for details
+				Removing intermediate container 65450c7ef06c
+				 ---> 4930e2f46242
+				Step 5/6 : EXPOSE 3000
+				 ---> Running in 36c27fcfb33f
+				Removing intermediate container 36c27fcfb33f
+				 ---> 018e07acbcfa
+				Step 6/6 : CMD ["node", "index.js"]
+				 ---> Running in 82acca187135
+				Removing intermediate container 82acca187135
+				 ---> 0ed7fd2144e8
+				Successfully built 0ed7fd2144e8
+				Successfully tagged platziapp:latest
+# en VS code: cambiar node:14 invalidamos todo el caché
+fm@fm:~/Documents/docker/imagenes/docker$ docker build -t platziapp . 
+				Sending build context to Docker daemon  118.3kB
+				Step 1/6 : FROM node:14
+				 ---> 52e5cabe9b9c
+				Step 2/6 : COPY [".", "/usr/src/"]
+				 ---> 559974fcb461
+				Step 3/6 : WORKDIR /usr/src
+				 ---> Running in 4d6c0580a671
+				Removing intermediate container 4d6c0580a671
+				 ---> 993d24ad670f
+				Step 4/6 : RUN npm install
+				 ---> Running in 9dbbd82d1bdb
+
+				> nodemon@1.18.6 postinstall /usr/src/node_modules/nodemon
+				> node bin/postinstall || exit 0
+
+				Love nodemon? You can now support the project via the open collective:
+				 > https://opencollective.com/nodemon/donate
+
+				npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.7 (node_modules/fsevents):
+				npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.7: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"x64"})
+
+				added 287 packages from 588 contributors and audited 355 packages in 8.773s
+				found 55 vulnerabilities (8 moderate, 30 high, 17 critical)
+				  run `npm audit fix` to fix them, or `npm audit` for details
+				Removing intermediate container 9dbbd82d1bdb
+				 ---> 3234ba9052a2
+				Step 5/6 : EXPOSE 3000
+				 ---> Running in a12341e6d9cf
+				Removing intermediate container a12341e6d9cf
+				 ---> b9075a355842
+				Step 6/6 : CMD ["node", "index.js"]
+				 ---> Running in 04c18dea078f
+				Removing intermediate container 04c18dea078f
+				 ---> 03834de86cfc
+				Successfully built 03834de86cfc
+				Successfully tagged platziapp:latest
+# en index.js cambiar BOOM por PUM: corre todo de vuelta
+fm@fm:~/Documents/docker/imagenes/docker$ docker build -t platziapp . 
+				Sending build context to Docker daemon  118.3kB
+				Step 1/6 : FROM node:14
+				 ---> 52e5cabe9b9c
+				Step 2/6 : COPY [".", "/usr/src/"]
+				 ---> c39138a09223
+				Step 3/6 : WORKDIR /usr/src
+				 ---> Running in 053e91d9005a
+				Removing intermediate container 053e91d9005a
+				 ---> 48ffe59ec6e5
+				Step 4/6 : RUN npm install
+				 ---> Running in 0d7c3727e450
+
+				> nodemon@1.18.6 postinstall /usr/src/node_modules/nodemon
+				> node bin/postinstall || exit 0
+
+				Love nodemon? You can now support the project via the open collective:
+				 > https://opencollective.com/nodemon/donate
+
+				npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.7 (node_modules/fsevents):
+				npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.7: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"x64"})
+
+				added 287 packages from 588 contributors and audited 355 packages in 9.467s
+				found 55 vulnerabilities (8 moderate, 30 high, 17 critical)
+				  run `npm audit fix` to fix them, or `npm audit` for details
+				Removing intermediate container 0d7c3727e450
+				 ---> 209b22e53e67
+				Step 5/6 : EXPOSE 3000
+				 ---> Running in d524e38ebf68
+				Removing intermediate container d524e38ebf68
+				 ---> 2cbb2636a9c3
+				Step 6/6 : CMD ["node", "index.js"]
+				 ---> Running in 00bdda9dc153
+				Removing intermediate container 00bdda9dc153
+				 ---> e883fed2d4f5
+				Successfully built e883fed2d4f5
+				Successfully tagged platziapp:latest
+# en VS code cambia COPY ["package.json", "package-lock.json", "/usr/src/"]
+# COPY [".", "/usr/src/"]
+fm@fm:~/Documents/docker/imagenes/docker$ docker build -t platziapp . 
+				Sending build context to Docker daemon  118.3kB
+				Step 1/7 : FROM node:14
+				 ---> 52e5cabe9b9c
+				Step 2/7 : COPY ["package.json","package-lock.json", "/usr/src/"]
+				 ---> 8cd680e6c583
+				Step 3/7 : WORKDIR /usr/src
+				 ---> Running in d5ccc1f6fdda
+				Removing intermediate container d5ccc1f6fdda
+				 ---> b7348872dc7b
+				Step 4/7 : RUN npm install
+				 ---> Running in 0a4056c0d4f1
+
+				> nodemon@1.18.6 postinstall /usr/src/node_modules/nodemon
+				> node bin/postinstall || exit 0
+
+				Love nodemon? You can now support the project via the open collective:
+				 > https://opencollective.com/nodemon/donate
+
+				npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.7 (node_modules/fsevents):
+				npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.7: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"x64"})
+
+				added 287 packages from 588 contributors and audited 355 packages in 19.737s
+				found 55 vulnerabilities (8 moderate, 30 high, 17 critical)
+				  run `npm audit fix` to fix them, or `npm audit` for details
+				Removing intermediate container 0a4056c0d4f1
+				 ---> 326afc851f71
+				Step 5/7 : COPY [".", "/usr/src/"]
+				 ---> 307abbaa7e4a
+				Step 6/7 : EXPOSE 3000
+				 ---> Running in 3c46166d16ce
+				Removing intermediate container 3c46166d16ce
+				 ---> d310a4f8c1c2
+				Step 7/7 : CMD ["node", "index.js"]
+				 ---> Running in 0c7383f288e6
+				Removing intermediate container 0c7383f288e6
+				 ---> 9ff84dcafdd9
+				Successfully built 9ff84dcafdd9
+				Successfully tagged platziapp:latest
+# en VS code index.js cambiar PUM por BOOM
+fm@fm:~/Documents/docker/imagenes/docker$ docker build -t platziapp . 
+				Sending build context to Docker daemon  118.3kB
+				Step 1/7 : FROM node:14
+				 ---> 52e5cabe9b9c
+				Step 2/7 : COPY ["package.json","package-lock.json", "/usr/src/"]
+				 ---> Using cache
+				 ---> 8cd680e6c583
+				Step 3/7 : WORKDIR /usr/src
+				 ---> Using cache
+				 ---> b7348872dc7b
+				Step 4/7 : RUN npm install
+				 ---> Using cache
+				 ---> 326afc851f71
+				Step 5/7 : COPY [".", "/usr/src/"]
+				 ---> 547bea4a6f6b
+				Step 6/7 : EXPOSE 3000
+				 ---> Running in 91066914fab8
+				Removing intermediate container 91066914fab8
+				 ---> 3ae87e93e698
+				Step 7/7 : CMD ["node", "index.js"]
+				 ---> Running in aa3e0603ab62
+				Removing intermediate container aa3e0603ab62
+				 ---> c257aa9dbbb0
+				Successfully built c257aa9dbbb0
+				Successfully tagged platziapp:latest
+# no tener que buildear cada vez que cambiamos algo
+# VS code cambia por CMD ["npx", "nodemon", "index.js"]
+fm@fm:~/Documents/docker/imagenes/docker$ docker build -t platziapp . 
+				Sending build context to Docker daemon  118.3kB
+				Step 1/7 : FROM node:14
+				 ---> 52e5cabe9b9c
+				Step 2/7 : COPY ["package.json","package-lock.json", "/usr/src/"]
+				 ---> Using cache
+				 ---> 8cd680e6c583
+				Step 3/7 : WORKDIR /usr/src
+				 ---> Using cache
+				 ---> b7348872dc7b
+				Step 4/7 : RUN npm install
+				 ---> Using cache
+				 ---> 326afc851f71
+				Step 5/7 : COPY [".", "/usr/src/"]
+				 ---> Using cache
+				 ---> 547bea4a6f6b
+				Step 6/7 : EXPOSE 3000
+				 ---> Using cache
+				 ---> 3ae87e93e698
+				Step 7/7 : CMD ["npx","nodemon", "index.js"]
+				 ---> Running in 8b95a530f429
+				Removing intermediate container 8b95a530f429
+				 ---> 66476b3d6fe7
+				Successfully built 66476b3d6fe7
+				Successfully tagged platziapp:latest
+# arroja error porque está sobre todos los archivos del directorio
+fm@fm:~/Documents/docker/imagenes/docker$ docker run --rm -p 3000:3000 -v /home/fm/Documents/docker/imagenes/docker:/usr/src platziapp
+				internal/modules/cjs/loader.js:905
+				  throw err;
+				  ^
+
+				Error: Cannot find module '/root/.npm/_npx/1/lib/node_modules/nodemon/bin/postinstall'
+					at Function.Module._resolveFilename (internal/modules/cjs/loader.js:902:15)
+					at Function.Module._load (internal/modules/cjs/loader.js:746:27)
+					at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:75:12)
+					at internal/main/run_main_module.js:17:47 {
+				  code: 'MODULE_NOT_FOUND',
+				  requireStack: []
+				}
+				[nodemon] 2.0.19
+				[nodemon] to restart at any time, enter `rs`
+				[nodemon] watching path(s): *.*
+				[nodemon] watching extensions: js,mjs,json
+				[nodemon] starting `node index.js`
+				internal/modules/cjs/loader.js:905
+				  throw err;
+				  ^
+
+				Error: Cannot find module 'express'
+				Require stack:
+				- /usr/src/index.js
+					at Function.Module._resolveFilename (internal/modules/cjs/loader.js:902:15)
+					at Function.Module._load (internal/modules/cjs/loader.js:746:27)
+					at Module.require (internal/modules/cjs/loader.js:974:19)
+					at require (internal/modules/cjs/helpers.js:101:18)
+					at Object.<anonymous> (/usr/src/index.js:1:17)
+					at Module._compile (internal/modules/cjs/loader.js:1085:14)
+					at Object.Module._extensions..js (internal/modules/cjs/loader.js:1114:10)
+					at Module.load (internal/modules/cjs/loader.js:950:32)
+					at Function.Module._load (internal/modules/cjs/loader.js:790:12)
+					at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:75:12) {
+				  code: 'MODULE_NOT_FOUND',
+				  requireStack: [ '/usr/src/index.js' ]
+				}
+				[nodemon] app crashed - waiting for file changes before starting...
+# corre sólo sobre le archivo index.js para que se actualice dinamicamente con nodemon
+^Cfm@fm:~/Documents/docker/imagenes/docker$ docker run --rm -p 3000:3000 -v /home/fm/Documents/docker/imagenes/docker/index.js:/usr/src/index.js platziapp
+				[nodemon] 1.18.6
+				[nodemon] to restart at any time, enter `rs`
+				[nodemon] watching: *.*
+				[nodemon] starting `node index.js`
+				(node:20) Warning: Accessing non-existent property 'count' of module exports inside circular dependency
+				(Use `node --trace-warnings ...` to show where the warning was created)
+				(node:20) Warning: Accessing non-existent property 'findOne' of module exports inside circular dependency
+				(node:20) Warning: Accessing non-existent property 'remove' of module exports inside circular dependency
+				(node:20) Warning: Accessing non-existent property 'updateOne' of module exports inside circular dependency
+				Server listening on port 3000!
+# en VS code index.js cambiar BOOM por OTRACOSA
+fm@fm:~/Documents/docker/imagenes/docker$ docker run --rm -p 3000:3000 -v /home/fm/Documents/docker/imagenes/docker/index.js:/usr/src/index.js platziapp
+				[nodemon] 1.18.6
+				[nodemon] to restart at any time, enter `rs`
+				[nodemon] watching: *.*
+				[nodemon] starting `node index.js`
+				(node:20) Warning: Accessing non-existent property 'count' of module exports inside circular dependency
+				(Use `node --trace-warnings ...` to show where the warning was created)
+				(node:20) Warning: Accessing non-existent property 'findOne' of module exports inside circular dependency
+				(node:20) Warning: Accessing non-existent property 'remove' of module exports inside circular dependency
+				(node:20) Warning: Accessing non-existent property 'updateOne' of module exports inside circular dependency
+				Server listening on port 3000!
+				[nodemon] restarting due to changes...
+				[nodemon] starting `node index.js`
+				(node:33) Warning: Accessing non-existent property 'count' of module exports inside circular dependency
+				(Use `node --trace-warnings ...` to show where the warning was created)
+				(node:33) Warning: Accessing non-existent property 'findOne' of module exports inside circular dependency
+				(node:33) Warning: Accessing non-existent property 'remove' of module exports inside circular dependency
+				(node:33) Warning: Accessing non-existent property 'updateOne' of module exports inside circular dependency
+				Server listening on port 3000!
