@@ -360,3 +360,163 @@ fm@fm:~/Documents/docker/imagenes/docker$ docker-compose logs -f app
 				app_1  | (node:42) Warning: Accessing non-existent property 'updateOne' of module exports inside circular dependency
 				app_1  | Server listening on port 3000!
 				^CERROR: Aborting.
+
+############################################################################################################################
+# crear un nuevo archivo
+fm@fm:~/Documents/docker/imagenes/docker$ touch docker-compose.override.yml
+fm@fm:~/Documents/docker/imagenes/docker$ code .
+fm@fm:~/Documents/docker/imagenes/docker$ cat docker-compose.override.yml
+# error porque es un archivo vacío
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up -d
+				ERROR: Top level object in './docker-compose.override.yml' needs to be an object not '<class 'NoneType'>'.
+# en VS code cambiar 
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose build 
+				db uses an image, skipping
+				Building app
+				Step 1/7 : FROM node:14
+				 ---> 52e5cabe9b9c
+				Step 2/7 : COPY ["package.json","package-lock.json", "/usr/src/"]
+				 ---> Using cache
+				 ---> 79abcd703e05
+				Step 3/7 : WORKDIR /usr/src
+				 ---> Using cache
+				 ---> b96712666117
+				Step 4/7 : RUN npm install
+				 ---> Using cache
+				 ---> f989c8d95f44
+				Step 5/7 : COPY [".", "/usr/src/"]
+				 ---> 58d089db72e3
+				Step 6/7 : EXPOSE 3000
+				 ---> Running in 24a574725259
+				Removing intermediate container 24a574725259
+				 ---> f610b25fd93a
+				Step 7/7 : CMD ["node", "index.js"]
+				 ---> Running in 3719c6000cfb
+				Removing intermediate container 3719c6000cfb
+				 ---> 63a0ce9bebb7
+
+				Successfully built 63a0ce9bebb7
+				Successfully tagged platziapp:latest
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up -d
+				Starting docker_db_1 ... done
+				Recreating docker_app_1 ... done
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose build 
+				db uses an image, skipping
+				Building app
+				Step 1/7 : FROM node:14
+				 ---> 52e5cabe9b9c
+				Step 2/7 : COPY ["package.json","package-lock.json", "/usr/src/"]
+				 ---> Using cache
+				 ---> 79abcd703e05
+				Step 3/7 : WORKDIR /usr/src
+				 ---> Using cache
+				 ---> b96712666117
+				Step 4/7 : RUN npm install
+				 ---> Using cache
+				 ---> f989c8d95f44
+				Step 5/7 : COPY [".", "/usr/src/"]
+				 ---> Using cache
+				 ---> aa7b275cec99
+				Step 6/7 : EXPOSE 3000
+				 ---> Using cache
+				 ---> ac4cd5f43ffc
+				Step 7/7 : CMD ["node", "index.js"]
+				 ---> Using cache
+				 ---> 8f9ed6c6abcb
+
+				Successfully built 8f9ed6c6abcb
+				Successfully tagged platziapp:latest
+# en VS code modificar UNA_VARIABLE
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up -d
+				docker_db_1 is up-to-date
+				Recreating docker_app_1 ... done
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose exec app bash
+				root@a21962d921d0:/usr/src# env
+				HOSTNAME=a21962d921d0
+				UNA_VARIABLE=Hola Platzi!
+				YARN_VERSION=1.22.19
+				PWD=/usr/src
+				HOME=/root
+				TERM=xterm
+				SHLVL=1
+				PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+				MONGO_URL=mongodb://db:27017/test
+				NODE_VERSION=14.20.0
+				_=/usr/bin/env
+				root@a21962d921d0:/usr/src# exit
+				exit
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose ps
+					Name                 Command             State              Ports           
+				--------------------------------------------------------------------------------
+				docker_app_1   docker-entrypoint.sh node     Up      0.0.0.0:3000->3000/tcp,:::3
+							   ...                                   000->3000/tcp              
+				docker_db_1    docker-entrypoint.sh mongod   Up      27017/tcp                  
+fm@fm:~/Documents/docker/imagenes/docker$ docker ps
+				CONTAINER ID   IMAGE       COMMAND                  CREATED         STATUS          PORTS                                       NAMES
+				a21962d921d0   platziapp   "docker-entrypoint.s…"   7 minutes ago   Up 7 minutes    0.0.0.0:3000->3000/tcp, :::3000->3000/tcp   docker_app_1
+				a995be54356a   mongo       "docker-entrypoint.s…"   23 hours ago    Up 15 minutes   27017/tcp                                   docker_db_1
+fm@fm:~/Documents/docker/imagenes/docker$ git status
+				On branch master
+				Your branch is up to date with 'origin/master'.
+
+				Changes not staged for commit:
+				  (use "git add <file>..." to update what will be committed)
+				  (use "git restore <file>..." to discard changes in working directory)
+					modified:   Dockerfile
+					modified:   docker-compose.yml
+					modified:   index.js
+
+				Untracked files:
+				  (use "git add <file>..." to include in what will be committed)
+					docker-compose.override.yml
+
+				no changes added to commit (use "git add" and/or "git commit -a")
+# en VS code escalar un servicio a varias instancias
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up -d --scale app=2
+				docker_db_1 is up-to-date
+				WARNING: The "app" service specifies a port on the host. If multiple containers for this service are created on a single host, the port will clash.
+				Starting docker_app_1 ... done
+				Creating docker_app_2 ... 
+				Creating docker_app_2 ... error
+
+				ERROR: for docker_app_2  Cannot start service app: driver failed programming external connectivity on endpoint docker_app_2 (8f6e6f7d8d2b840c0d4184b00ebb3d7858830b5887f52b8ee76bdcee0389b1c9): Bind for 0.0.0.0:3000 failed: port is already allocated
+
+				ERROR: for app  Cannot start service app: driver failed programming external connectivity on endpoint docker_app_2 (8f6e6f7d8d2b840c0d4184b00ebb3d7858830b5887f52b8ee76bdcee0389b1c9): Bind for 0.0.0.0:3000 failed: port is already allocated
+				ERROR: Encountered errors while bringing up the project.
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose down
+				Stopping docker_app_1 ... done
+				Stopping docker_db_1  ... done
+				Removing docker_app_2 ... done
+				Removing docker_app_1 ... done
+				Removing docker_db_1  ... done
+				Removing network docker_default
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose ps
+				Name   Command   State   Ports
+				------------------------------
+fm@fm:~/Documents/docker/imagenes/docker$ docker ps -a
+				CONTAINER ID   IMAGE          COMMAND                  CREATED        STATUS                    PORTS     NAMES
+				5b41b39356fa   hello-world    "/hello"                 24 hours ago   Exited (0) 24 hours ago             cranky_wilson
+				e3864c81fcf2   66476b3d6fe7   "docker-entrypoint.s…"   24 hours ago   Created                             app2
+# en VS code cmodificar 3000:3001
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose up -d --scale app=2
+				Creating network "docker_default" with the default driver
+				Creating docker_db_1 ... done
+				WARNING: The "app" service specifies a port on the host. If multiple containers for this service are created on a single host, the port will clash.
+				Creating docker_app_1 ... done
+				Creating docker_app_2 ... done
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose ps
+					Name                 Command             State              Ports           
+				--------------------------------------------------------------------------------
+				docker_app_1   docker-entrypoint.sh node     Up      0.0.0.0:3000->3000/tcp,:::3
+							   ...                                   000->3000/tcp              
+				docker_app_2   docker-entrypoint.sh node     Up      0.0.0.0:3001->3000/tcp,:::3
+							   ...                                   001->3000/tcp              
+				docker_db_1    docker-entrypoint.sh mongod   Up      27017/tcp                  
+fm@fm:~/Documents/docker/imagenes/docker$ docker-compose down
+				Stopping docker_app_2 ... done
+				Stopping docker_app_1 ... done
+				Stopping docker_db_1  ... done
+				Removing docker_app_2 ... done
+				Removing docker_app_1 ... done
+				Removing docker_db_1  ... done
+				Removing network docker_default
